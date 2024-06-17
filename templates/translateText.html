@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<script type="text/javascript" src="https://vhg.cmp.uea.ac.uk/tech/jas/vhg2024/cwa/allcsa.js"></script>
+{% endblock %}
+
+{% block body %}
+
+<body onload="CWASA.init();">
+
+<table>    
+    <tr>
+        <td>
+            <!-- Text Input para SiGML Text -->    
+            <form class="mainForm" action="#" method="POST" novalidate onsubmit="return sendTextToTranslate()">
+                <button id="recordButton" class="buttonRecording notRecording" onclick="transcribe()">
+                    <span class="icon"></span>
+                    Start recording
+                </button>
+                <label id="recordInstructions" class="recordInstructions"></label>
+
+                <label id="inputLabel">Text to translate (0/50): </label>
+            
+                <textarea id="textToTranslate" name="textToTranslate" rows="5" maxlength="51"></textarea>
+
+                <div class="sliderDiv">
+                    <label for="slider">Translation type:</label>
+                    &nbsp;&nbsp;
+                    <select id="bslComboBox" class="slider">
+                        <option value="bsl" selected>BSL</option>
+                        <option value="sse">SSE</option>
+                    </select>
+                </div>
+
+                <div class="sliderDiv">
+                    <label for="slider">Speed:</label>
+                    &nbsp;&nbsp;
+                    <select id="speedComboBox" class="slider" onchange="handleSpeed()">
+                        <option value="-4">x0.25</option>
+                        <option value="-3">x0.5</option>
+                        <option value="-1">x0.75</option>
+                        <option value="0" selected>x1</option>
+                        <option value="1">x1.25</option>
+                        <option value="2">x1.5</option>
+                        <option value="3">x1.75</option>
+                        <option value="4">x2</option>
+                    </select>
+                </div>
+            
+                <div class="additionalButtons">
+                    <button class="buttonPlay" type="submit">Translate</button>
+
+                    <button class="buttonPause"    onclick="return handleClickButtonPause()"    style="display: none;">Pause</button>
+                    <button class="buttonContinue" onclick="return handleClickButtonContinue()" style="display: none;">Continue</button>
+                    <button class="buttonRestart"  onclick="return handleClickButtonRestart()"  style="display: none;">Restart</button>
+                    <button class="buttonStop"     onclick="return handleClickButtonStop()"     style="display: none;">Return</button>
+                </div>
+            </form>
+        </td>
+
+        <td rowspan="2" width="60%">
+            <!-- CWA signing avatar panel -->
+            <div class="CWASAAvatar av0"></div>
+            
+            <!-- SiGML Word -->
+            <div class="wordSigned">
+                <input type="text" class="txtGloss av0" value="">
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td height="40%">
+            <div class="output">
+                <label id="textTransformed" class="textTransformed"></label>
+                <label id="processedText" class="processedText"></label>
+            </div>
+        </td>
+    </tr>
+</table>
+
+<!-- SiGML Text -->
+<div class="CWASASiGMLText av0" ></div>
+
+<!-- Avatar/Play/Stop BUTTONS -->
+<div class="CWASAPlay av0" ></div>
+
+<span class="CWASAPlayExtra av0" ></span>
+
+<!-- Speed -->
+<span class="CWASASpeed av0">
+</span>
+
+<script src="{{ url_for('static', filename='js/translateText.js') }}"></script>
+{% endblock %}
