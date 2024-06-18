@@ -205,14 +205,13 @@ table {
   padding: 20px;
 }
 
-.processedText {
+.translatedText {
   padding-bottom: 20px;
   font-size: 20px;
   font-weight: 300;
 }
 
 .textTransformed {
-  padding: 10px;
   font-size: 30px;
   font-weight: 500;
 }
@@ -242,12 +241,54 @@ table {
 }
 
 .recording {
-    background-color: red;
-    color: white;
+  background-color: red;
+  color: white;
 }
 .notRecording {
-    background-color: grey;
-    color: white;
+  background-color: grey;
+  color: white;
+}
+
+.isCorrect {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.isCorrectButtons {
+  display: flex;
+  flex-direction: row;
+}
+
+.buttonYes{
+  background-color: transparent;
+  color: #4caf50;
+}
+.buttonNo{
+  background-color: transparent;
+  color: #f44336;
+}
+
+.correctedSentence {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.correctedSentenceInput {
+  height: 30px;
+  padding: 2px;
+  font-size: 16px;
+}
+
+.correctedSentenceSend {
+  height: 35px !important;
+  font-size: 14px !important;
+  background-color: #4caf50;
 }
 
 /*--------------------------------*/

@@ -3,11 +3,16 @@ var letterCounter = document.getElementById("inputLabel");
 
 var recordButton       = document.getElementById("recordButton");
 var recordInstructions = document.getElementById("recordInstructions");
+var isCorrectQuestion  = document.getElementById("isCorrect");
+var correctionInput    = document.getElementById("correctionInput");
 
 var bslComboBox  = document.getElementById("bslComboBox");
 
 var isRecording   = false;
 var isTranslating = false;
+
+var textToTranslate = "";
+var translatedText  = "";
 
 document.getElementById("textTransformed").textContent = "";
 
@@ -90,8 +95,8 @@ function updateButtons(isPaused) {
 }
 
 function sendTextToTranslate() {
-    var text = document.getElementById("textToTranslate").value;
-    if (text == "") {
+    textToTranslate = document.getElementById("textToTranslate").value;
+    if (textToTranslate == "") {
         return false;
     }
 
@@ -101,7 +106,7 @@ function sendTextToTranslate() {
     var isBSL = bslComboBox.value === "bsl";
 
     document.getElementById("textTransformed").textContent = "Processing...";
-    document.getElementById("processedText").textContent   = "";
+    document.getElementById("translatedText").textContent   = "";
     document.querySelector(".txtGloss.av0").value          = "";
 
     var xhttp = new XMLHttpRequest();
@@ -112,12 +117,12 @@ function sendTextToTranslate() {
 
             document.querySelector(".txtaSiGMLText.av0").value = textInSigml;
 
-            var processedText = JSON.parse(this.responseText).processedText;
+            translatedText = JSON.parse(this.responseText).translatedText;
 
             document.getElementById("textTransformed").textContent = "Text transformed";
-            document.getElementById("processedText").textContent = "[ " + processedText + " ]";
+            document.getElementById("translatedText").textContent   = "[ " + translatedText + " ]";
 
-            console.log(processedText)
+            isCorrectQuestion.style.display = "flex";
 
             handleClickButtonPlay();
         }
@@ -125,7 +130,7 @@ function sendTextToTranslate() {
 
     xhttp.open("POST", "/translateText", true);
     xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    xhttp.send("textToTranslate=" + text + "&isBSL=" + isBSL + "&id=translate");
+    xhttp.send("textToTranslate=" + textToTranslate + "&isBSL=" + isBSL + "&id=translate");
 
     return false;
 }
@@ -178,8 +183,12 @@ function handleClickButtonStop() {
     updateButtons(false);
 
     document.getElementById("textTransformed").textContent = "";
-    document.getElementById("processedText").textContent   = "";
+    document.getElementById("translatedText").textContent  = "";
     document.querySelector(".txtGloss.av0").value          = "";
+    
+    isCorrectQuestion.style.display = "none";
+    correctionInput.style.display   = "none";
+
     return false;
 }
 
@@ -205,7 +214,6 @@ function handleSpeed() {
 }
 
 function transcribe() {
-    console.log("le han dado", isRecording)
     var xhttp = new XMLHttpRequest();
 
     const recordButton = document.getElementById("recordButton");
@@ -243,4 +251,66 @@ function transcribe() {
     xhttp.send("id=transcribe");
 
     return false;
+}
+
+function actionCorrectionInput(isCorrect) {
+    isCorrectQuestion.style.display = "none";
+
+    correctionInput.style.display = isCorrect ? "none" : "block";
+}
+
+function submitCorrection() {
+    var xhttp = new XMLHttpRequest();
+
+    var correctSentence = document.getElementById("correctedSentence").value;
+    if (correctSentence == "") {
+        return;
+    }
+
+    xhttp.onreadystatechange = function() {
+        if (this.readyState == 4) {
+            isCorrectQuestion.style.display = "none";
+            correctionInput.style.display   = "none";
+
+            correctSentence.value = "";
+
+            thankUser();
+        }
+    };
+
+    xhttp.open("POST", "/translateText", true);
+    xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xhttp.send("inputSentence=" + textToTranslate + "&translatedSentence=" + translatedText + "&correctSentence=" + correctSentence + "&id=correction");
+
+    return false;
+}
+
+function thankUser() {
+    previousSiGML = document.querySelector(".txtaSiGMLText.av0").value;
+
+    document.querySelector(".txtaSiGMLText.av0").value =
+        '<?xml version="1.0" encoding="UTF-8"?>' +
+        '<sigml>' +
+            '<hns_sign gloss="THANK_YOU">' +
+                '<hamnosys_manual>' +
+                    '<hamflathand/>' +
+                    '<hamthumboutmod/>' +
+                    '<hamextfingerul/>' +
+                    '<hampalml/>' +
+                    '<hamchin/>' +
+                    '<hamseqbegin/>' +
+                    '<hamtouch/>' +
+                    '<hamfingernail/>' +
+                    '<hammiddlefinger/>' +
+                    '<hamseqend/>' +
+                    '<hammovedo/>' +
+                '</hamnosys_manual>' +
+            '</hns_sign>' +
+        '</sigml>';
+
+        
+    var buttonPlay = document.querySelector(".bttnPlaySiGMLText.av0");
+    buttonPlay.click();
+
+    document.querySelector(".txtaSiGMLText.av0").value = previousSiGML;
 }

@@ -53,7 +53,7 @@
                     <button class="buttonPause"    onclick="return handleClickButtonPause()"    style="display: none;">Pause</button>
                     <button class="buttonContinue" onclick="return handleClickButtonContinue()" style="display: none;">Continue</button>
                     <button class="buttonRestart"  onclick="return handleClickButtonRestart()"  style="display: none;">Restart</button>
-                    <button class="buttonStop"     onclick="return handleClickButtonStop()"     style="display: none;">Return</button>
+                    <button class="buttonStop"     onclick="return handleClickButtonStop()"     style="display: none;">Finish</button>
                 </div>
             </form>
         </td>
@@ -72,7 +72,23 @@
         <td height="40%">
             <div class="output">
                 <label id="textTransformed" class="textTransformed"></label>
-                <label id="processedText" class="processedText"></label>
+                <label id="translatedText" class="translatedText"></label>
+
+                <div id="isCorrect" class="isCorrect" style="display: none;">
+                    <label for="correctness">Are the words in the translated sentence correct?</label>
+                    <div class="buttons">
+                        <button class="buttonYes" onclick="return actionCorrectionInput(true)">Yes</button>
+                        <button class="buttonNo" onclick="return actionCorrectionInput(false)">No</button>
+                    </div>
+                </div>
+    
+                <div id="correctionInput" style="display: none;">
+                    <label for="correctedSentence">Enter the corrected sentence:</label>
+                    <div class="correctedSentence">
+                        <input type="text" id="correctedSentence" class="correctedSentenceInput" name="correctedSentence">
+                        <button class="correctedSentenceSend" onclick="submitCorrection()">Send</button>
+                    </div>
+                </div>
             </div>
         </td>
     </tr>

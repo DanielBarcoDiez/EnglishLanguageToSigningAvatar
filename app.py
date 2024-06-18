@@ -2,7 +2,6 @@ from flask import Flask, render_template, request, jsonify, redirect
 from flask_cors import CORS
 
 import speech_recognition as sr
-import pyttsx3
 
 from back.textTo.textToHamNoSys  import textToHamNosys, FILE_PATH_NAME
 from back.textTo.hamnosysToSigml import hamnosysToSigml
@@ -47,16 +46,23 @@ def translateText():
 
             textInSigml = hamnosysToSigml(hamNoSysSymbols, hamNoSysWords)
 
-            return jsonify({"textInSigml": textInSigml, "processedText": processedText.replace("_", " ")})
+            return jsonify({"textInSigml": textInSigml, "translatedText": processedText.replace("_", " ")})
+        
+        elif request.form.get("id") == "correction":
+            try:
+                inputSentence      = request.form.get("inputSentence")
+                translatedSentence = request.form.get("translatedSentence")
+                correctSentence    = request.form.get("correctSentence")
+
+                with open("back/DataBase/fixedSentences.txt", "a", encoding="utf-8") as file:
+                    file.write(f"Input sentence:      {inputSentence}\n")
+                    file.write(f"Translated sentence: {translatedSentence}\n")
+                    file.write(f"Corrected sentence:  {correctSentence}\n\n")
+
+            except Exception as e:
+                pass
 
     return render_template('translateText.html')
-
-def speak_text(command):
-    tts_engine = pyttsx3.init()
-    """Function to convert text to speech."""
-    tts_engine.say(command)
-    tts_engine.runAndWait()
-
 def transformWordsNotInDataBase(sentence, sentenceWithType):
     transformedSentence = []
 

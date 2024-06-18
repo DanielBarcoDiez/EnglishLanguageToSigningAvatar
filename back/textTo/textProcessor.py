@@ -359,26 +359,26 @@ def process(sentence):
         hasInterrogation = "?" in sent.text
         hasExclamation   = "!" in sent.text
 
-        for sent in sentences:
-            temporalExpressions.extend(getTemporalExpressions(sent))
+        for sentenceSplitted in sentences:
+            temporalExpressions.extend(getTemporalExpressions(sentenceSplitted))
 
             for tExpression in predefinedTemporalExpressions:
-                if tExpression.replace(" ", "_") in sent:
+                if tExpression.replace(" ", "_") in sentenceSplitted:
                     temporalExpressions.append(tExpression.replace(" ", "_"))
 
             for qExpression in questionExpressions:
-                if qExpression.replace(" ", "_") in sent:
+                if qExpression.replace(" ", "_") in sentenceSplitted:
                     questionWords.append(qExpression.replace(" ", "_"))
 
             # remove temporal expressions and question expressions from sentence to analyze
             pattern = r'\b(?:' + '|'.join(re.escape(expr) for expr in temporalExpressions + questionWords) + r')\b'
-            sent = re.sub(pattern + r'[.,!?;:]?', '', sent)
-            sent = re.sub(r'\s+', ' ', sent).strip()
+            sentenceSplitted = re.sub(pattern + r'[.,!?;:]?', '', sentenceSplitted)
+            sentenceSplitted = re.sub(r'\s+', ' ', sentenceSplitted).strip()
 
-            nouns                                      = getTypeOfWordWithId(sent, ["NN", "NNP", "NNS", "NNPS"])
-            nounsAndAdjectivesNumbersPosessivePronouns = getNounsAndAdjectivesNumbersPosessivePronouns(sent)
+            nouns                                      = getTypeOfWordWithId(sentenceSplitted, ["NN", "NNP", "NNS", "NNPS"])
+            nounsAndAdjectivesNumbersPosessivePronouns = getNounsAndAdjectivesNumbersPosessivePronouns(sentenceSplitted)
 
-            interjections, please, determiners, prepositions, adjectivesNumbersPosessivePronouns, foreignWords, verbsAdverbs, existentialModals, pronouns, qWords, negations = getOtherWords(sent)
+            interjections, please, determiners, prepositions, adjectivesNumbersPosessivePronouns, foreignWords, verbsAdverbs, existentialModals, pronouns, qWords, negations = getOtherWords(sentenceSplitted)
             questionWords.extend(qWords)
 
             adjectivesAndNouns = joinAdjectivesAndNouns(nouns, nounsAndAdjectivesNumbersPosessivePronouns)
@@ -389,7 +389,7 @@ def process(sentence):
             processedSentence += ((" ").join(interjections) + " " +
                                     (" ").join(determiners) + " " +
                                     (" ").join(prepositions) + " " +
-                                    (" ").join(adjectivesNumbersPosessivePronouns) + " ES" +
+                                    (" ").join(adjectivesNumbersPosessivePronouns) + " " +
                                     (" ").join(adjectivesAndNouns) + " " +
                                     (" ").join(nouns) + " " +
                                     (" ").join(foreignWords) + " " +
