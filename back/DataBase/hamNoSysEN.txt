@@ -571,7 +571,7 @@ night(NOUN):�
 nine(NUM):
 nineteen(NUM):
 ninety(NUM):
-no(INTJ)/not(PART):
+no(INTJ)/not(PART):
 noise(NOUN):
 no_one(EXP):
 normal(ADJ):
@@ -1079,7 +1079,7 @@ Them(PRON):
 wipe_off(EXP):
 Sit_and_Meet(EXP):
 phone(NOUN):
-can(AUX):
+can(EXP):
 Pretend(VERB):
 Example(NOUN):
 Library(NOUN):

@@ -95,7 +95,8 @@ questionExpressions = [
     "how many",
     "how much",
     "how old",
-    "how long"
+    "how long",
+    "can"
 ]
 
 predefinedTemporalExpressions = [
@@ -346,39 +347,44 @@ def joinAdjectivesAndNouns(nouns, nounsAndAdjectivesNumbersPosessivePronouns):
 def process(sentence):
     processedCompleteSentence = ""
 
-    questionWords = []
-    temporalExpressions = []
-
     doc = nlp(sentence)
 
     for sent in doc.sentences:
         processedSentence = ""
 
+        questionWords       = []
+        temporalExpressions = []
+
         sentences = splitSentences(sent.text)
 
-        hasInterrogation = "?" in sent.text
-        hasExclamation   = "!" in sent.text
+        for sentenceSplitted in sentences:
+            if sentenceSplitted in ['-',',','?','!']:
+                processedSentence += ' ' + sentenceSplitted + ' '
+                continue
 
-        for sent in sentences:
-            temporalExpressions.extend(getTemporalExpressions(sent))
+            finalPunctuation = ""
+            if sentenceSplitted[-1] in ['-',',','?','!']:
+                finalPunctuation = sentenceSplitted[-1]
+                
+            temporalExpressions.extend(getTemporalExpressions(sentenceSplitted))
 
             for tExpression in predefinedTemporalExpressions:
-                if tExpression.replace(" ", "_") in sent:
+                if tExpression.replace(" ", "_") in sentenceSplitted:
                     temporalExpressions.append(tExpression.replace(" ", "_"))
 
             for qExpression in questionExpressions:
-                if qExpression.replace(" ", "_") in sent:
+                if qExpression.replace(" ", "_") in sentenceSplitted:
                     questionWords.append(qExpression.replace(" ", "_"))
 
             # remove temporal expressions and question expressions from sentence to analyze
             pattern = r'\b(?:' + '|'.join(re.escape(expr) for expr in temporalExpressions + questionWords) + r')\b'
-            sent = re.sub(pattern + r'[.,!?;:]?', '', sent)
-            sent = re.sub(r'\s+', ' ', sent).strip()
+            sentenceSplitted = re.sub(pattern + r'[.,!?;:]?', '', sentenceSplitted)
+            sentenceSplitted = re.sub(r'\s+', ' ', sentenceSplitted).strip()
 
-            nouns                                      = getTypeOfWordWithId(sent, ["NN", "NNP", "NNS", "NNPS"])
-            nounsAndAdjectivesNumbersPosessivePronouns = getNounsAndAdjectivesNumbersPosessivePronouns(sent)
+            nouns                                      = getTypeOfWordWithId(sentenceSplitted, ["NN", "NNP", "NNS", "NNPS"])
+            nounsAndAdjectivesNumbersPosessivePronouns = getNounsAndAdjectivesNumbersPosessivePronouns(sentenceSplitted)
 
-            interjections, please, determiners, prepositions, adjectivesNumbersPosessivePronouns, foreignWords, verbsAdverbs, existentialModals, pronouns, qWords, negations = getOtherWords(sent)
+            interjections, please, determiners, prepositions, adjectivesNumbersPosessivePronouns, foreignWords, verbsAdverbs, existentialModals, pronouns, qWords, negations = getOtherWords(sentenceSplitted)
             questionWords.extend(qWords)
 
             adjectivesAndNouns = joinAdjectivesAndNouns(nouns, nounsAndAdjectivesNumbersPosessivePronouns)
@@ -400,12 +406,7 @@ def process(sentence):
                                     (" ").join(please) + " "
                                     )
 
-        processedCompleteSentence += " ".join(temporalExpressions) + " " + processedSentence + " " + " ".join(questionWords)
-
-        if hasInterrogation:
-            processedCompleteSentence += "?"
-        elif hasExclamation:
-            processedCompleteSentence += "!"
+        processedCompleteSentence += " ".join(temporalExpressions) + " " + processedSentence + " " + " ".join(questionWords) + " " + finalPunctuation
 
     return processedCompleteSentence.strip()
 
@@ -425,7 +426,7 @@ def postProcess(sentence):
                 continue
             if dicWordsAndUpos[word.text] == 'DET' and word.text in ["a", "an", "the"]:
                 continue
-            if dicWordsAndUpos[word.text] == "AUX" and word.text not in ["will"]:
+            if dicWordsAndUpos[word.text] == "AUX" and word.lemma not in ["will", "can"]:
                 continue
             if word.text in ["to", "it", "for", "of"]:
                 continue

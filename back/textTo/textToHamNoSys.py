@@ -9,9 +9,9 @@ def textToHamNosys(text):
     listWords = []
 
     for word in text.split():
-        if word.split("(")[0] == '?':
-            listSimbols.append("?")
-            listWords.append(word.upper().split("(")[0])
+        if word.split("(")[0] in ['?','!','.',',']:
+            listSimbols.append(word.split("(")[0])
+            listWords.append(word.split("(")[0])
             
             continue
 

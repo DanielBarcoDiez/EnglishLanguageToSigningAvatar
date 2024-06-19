@@ -95,7 +95,8 @@ questionExpressions = [
     "how many",
     "how much",
     "how old",
-    "how long"
+    "how long",
+    "can"
 ]
 
 predefinedTemporalExpressions = [
@@ -346,20 +347,25 @@ def joinAdjectivesAndNouns(nouns, nounsAndAdjectivesNumbersPosessivePronouns):
 def process(sentence):
     processedCompleteSentence = ""
 
-    questionWords = []
-    temporalExpressions = []
-
     doc = nlp(sentence)
 
     for sent in doc.sentences:
         processedSentence = ""
 
+        questionWords       = []
+        temporalExpressions = []
+
         sentences = splitSentences(sent.text)
 
-        hasInterrogation = "?" in sent.text
-        hasExclamation   = "!" in sent.text
-
         for sentenceSplitted in sentences:
+            if sentenceSplitted in ['-',',','?','!']:
+                processedSentence += ' ' + sentenceSplitted + ' '
+                continue
+
+            finalPunctuation = ""
+            if sentenceSplitted[-1] in ['-',',','?','!']:
+                finalPunctuation = sentenceSplitted[-1]
+                
             temporalExpressions.extend(getTemporalExpressions(sentenceSplitted))
 
             for tExpression in predefinedTemporalExpressions:
@@ -400,12 +406,7 @@ def process(sentence):
                                     (" ").join(please) + " "
                                     )
 
-        processedCompleteSentence += " ".join(temporalExpressions) + " " + processedSentence + " " + " ".join(questionWords)
-
-        if hasInterrogation:
-            processedCompleteSentence += "?"
-        elif hasExclamation:
-            processedCompleteSentence += "!"
+        processedCompleteSentence += " ".join(temporalExpressions) + " " + processedSentence + " " + " ".join(questionWords) + " " + finalPunctuation
 
     return processedCompleteSentence.strip()
 
@@ -425,7 +426,7 @@ def postProcess(sentence):
                 continue
             if dicWordsAndUpos[word.text] == 'DET' and word.text in ["a", "an", "the"]:
                 continue
-            if dicWordsAndUpos[word.text] == "AUX" and word.text not in ["will"]:
+            if dicWordsAndUpos[word.text] == "AUX" and word.lemma not in ["will", "can"]:
                 continue
             if word.text in ["to", "it", "for", "of"]:
                 continue

@@ -1,0 +1,7 @@
+pronouncing
+stanza
+contractions
+num2words
+spello
+textProcessorTest
+wer

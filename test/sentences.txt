@@ -2,7 +2,7 @@ Where is the toilet? / Toilet where?
 Hello, my name is Dani / Hello name my Dani
 What's your name? / Name you what?
 How can I help you? / Help you me how? 
-Can you help me? / Help me can?
+Can you help me? / Help me can you?
 Stay safe / Stay safe
 Be careful please / Careful please
 Wait there please / Wait there please
@@ -30,7 +30,7 @@ My favourite colour is pink / Favourite colour my pink
 What's your number? / Number you what?
 Do you want coffee? / Coffee want you?
 yes, 2 sugars please / yes two sugar please
-What are you doing later? / Late do you what?
+What are you doing later? / Later do you what?
 Later, I'm going cinema to watch Batman / Late me go cinema watch Batman
 Where are those shoes from? / That shoe where from?
 What do you want for dinner? / Dinner you want what?
@@ -51,7 +51,7 @@ Can you drive? / you Drive can?
 Do you agree? / Agree you?
 Are you working tomorrow? / Tomorrow work you?
 Are you married? / Marry you?
-What are you looking for? / Seek you what?
+What are you looking for? / Look you what?
 What do you want? / Want you what?
 The toilet is there / Toilet there
 How are you paying? / Pay you how?
@@ -97,9 +97,9 @@ Where does Ben live? / Ben live where?
 Far, in Bristol. It's a shame / Far Bristol shame
 He has two daughters / He two daughter have
 What's their age? / Age they what?
-He has a sister as well, what is her name? / He sister have as well, name she what?
+He has a sister as well. What is her name? / He sister have as well, name she what?
 Hannah is younger than me / Hannah young me
-Hannah divorced, but she has one son / past Hannah divorced one son have she
+Hannah divorced, but she has one son / past Hannah divorce one son have she
 I have two dogs / Me two dog have
 Lily is a naughty dog, greedy / Lily naughty greedy dog
 Her fur is black, her paws are white / fur black she paws white she

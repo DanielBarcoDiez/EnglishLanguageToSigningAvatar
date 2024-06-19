@@ -61,36 +61,46 @@ def hamnosysUnicodeToSigmlCode(gloss, hamnosysCodes):
 
     return (gloss, sigmlList)
 
-def writeSigml(wordsInSigmlCodeList): 
+def writeSigml(wordsInSigmlCodeList):
+    idx = 0
+
     for gloss, hamNosSys in wordsInSigmlCodeList:
-        if gloss == '?':
-            gestGloss = elementTree.SubElement(sigmlAsXML, 'hamgestural_sign')
-            gestGloss.set('gloss', '?')
+        itemGloss = elementTree.SubElement(sigmlAsXML, 'hns_sign')
+        itemGloss.set('gloss', gloss)
 
-            gestNonManual  = elementTree.SubElement(gestGloss    , 'sign_nonmanual')
-            shouderTier    = elementTree.SubElement(gestNonManual, 'shoulder_tier')
-            shouderMovement= elementTree.SubElement(shouderTier  , 'shoulder_movement ')
-            shouderMovement.set('movement', 'SB')
+        phonetic = pronouncing.phones_for_word(gloss)
 
-            elementTree.SubElement(gestGloss, 'sign_manual')
+        itemNonManual = elementTree.SubElement(itemGloss, 'hamnosys_nonmanual')
 
-        else:
-            itemGloss = elementTree.SubElement(sigmlAsXML, 'hns_sign')
-            itemGloss.set('gloss', gloss)
+        if phonetic and gloss not in ['?', 'NOT']:
+            phoneticParsed = ''.join(filter(str.isalpha, phonetic[0])).lower()
+            mouth_picture_attr = {'picture': phoneticParsed}
+            elementTree.SubElement(itemNonManual, 'hnm_mouthpicture', mouth_picture_attr)
 
-            phonetic = pronouncing.phones_for_word(gloss)
-            if phonetic:
-                phoneticParsed = ''.join(filter(str.isalpha, phonetic[0])).lower()
+        if isAQuestion(wordsInSigmlCodeList, idx):
+            elementTree.SubElement(itemNonManual, 'hnm_eyebrows', {'tag': 'FU'})
 
-                itemNonManual      = elementTree.SubElement(itemGloss, 'hamnosys_nonmanual')
-                mouth_picture_attr = {'picture': phoneticParsed}
+        if isAnExclamation(wordsInSigmlCodeList, idx):
+            elementTree.SubElement(itemNonManual, 'hnm_eyebrows', {'tag': 'RB'})
 
-                elementTree.SubElement(itemNonManual, 'hnm_mouthpicture', mouth_picture_attr)
+        if isNegative(wordsInSigmlCodeList, idx):
+            elementTree.SubElement(itemNonManual, 'hnm_head', {'tag': 'SH'})
 
+        if isTheQuestionWord(wordsInSigmlCodeList, idx):
+            elementTree.SubElement(itemNonManual, 'hnm_shoulder', {'tag': 'SB'})
+
+        if gloss == 'YES':
+            elementTree.SubElement(itemNonManual, 'hnm_head', {'tag': 'NO'})
+        elif gloss == 'NO':
+            elementTree.SubElement(itemNonManual, 'hnm_head', {'tag': 'SH'})
+
+        if gloss not in ['?', 'NOT']:
             itemManual = elementTree.SubElement(itemGloss, 'hamnosys_manual')
 
             for sigmlCode in hamNosSys:
                 elementTree.SubElement(itemManual, sigmlCode)
+
+        idx += 1
 
     dataStr = elementTree.tostring(sigmlAsXML, encoding='unicode')
 
@@ -99,3 +109,29 @@ def writeSigml(wordsInSigmlCodeList):
     sigmlCode = dom.toprettyxml(encoding='UTF-8').decode('utf-8')
 
     return sigmlCode
+
+def isAQuestion(pairs, startIndex):
+    for i in range(startIndex, len(pairs)):
+        if pairs[i][0] in ['!','.',',']:
+            return False
+        if pairs[i][0] == '?':
+            return True
+    return False
+
+def isAnExclamation(pairs, startIndex):
+    for i in range(startIndex, len(pairs)):
+        if pairs[i][0] in ['?','.',',']:
+            return False
+        if pairs[i][0] == '!':
+            return True
+    return False
+
+def isNegative(pairs, startIndex):
+    if (startIndex + 1 == len(pairs)):
+        return False
+       
+def isTheQuestionWord(pairs, startIndex):
+    if (startIndex + 1 == len(pairs)):
+        return False
+
+    return pairs[startIndex + 1][0] == '?'
