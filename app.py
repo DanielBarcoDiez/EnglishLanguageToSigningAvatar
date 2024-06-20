@@ -11,11 +11,7 @@ app = Flask(__name__)
 app.title = "ELSA"
 CORS(app)
 
-@app.route("/")
-def index():
-    return render_template("index.html")
-
-@app.route('/translateText', methods=["GET", "POST"])
+@app.route('/', methods=["GET", "POST"])
 def translateText():
     if request.method == "POST":
         if request.form.get("id") == "transcribe":

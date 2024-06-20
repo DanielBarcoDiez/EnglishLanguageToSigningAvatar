@@ -128,7 +128,7 @@ function sendTextToTranslate() {
         }
     };
 
-    xhttp.open("POST", "/translateText", true);
+    xhttp.open("POST", "/", true);
     xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     xhttp.send("textToTranslate=" + textToTranslate + "&isBSL=" + isBSL + "&id=translate");
 
@@ -246,7 +246,7 @@ function transcribe() {
         }
     };
 
-    xhttp.open("POST", "/translateText", true);
+    xhttp.open("POST", "/", true);
     xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     xhttp.send("id=transcribe");
 
@@ -278,7 +278,7 @@ function submitCorrection() {
         }
     };
 
-    xhttp.open("POST", "/translateText", true);
+    xhttp.open("POST", "/", true);
     xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     xhttp.send("inputSentence=" + textToTranslate + "&translatedSentence=" + translatedText + "&correctSentence=" + correctSentence + "&id=correction");
 
